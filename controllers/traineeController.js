@@ -194,6 +194,7 @@ exports.getCollectionStats = ({ userId }, req, res, next) => {
     .select("startDate")
     .select("endDate")
     .select("amount")
+    .select("createdAt")
     .then((invoice) => {
       console.log(invoice);
       res.status(202).json(invoice);
