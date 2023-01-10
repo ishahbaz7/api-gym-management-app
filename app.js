@@ -68,6 +68,16 @@ app.post("/api/upload-image", upload.single("image"), async (req, res) => {
   }
   return res.status(402).json({ response: "please select file" });
 });
+app.post("/api/delete-image", (req, res, next) => {
+  const { location } = req?.body;
+  console.log("req.body", req.body);
+  fs.unlink(path.join(__dirname, location), (err) => {
+    if (!err) {
+      return res.status(202).json("ok");
+    }
+    return res.status(402).json(err);
+  });
+});
 
 const serveClient = (req, res) => {
   res.sendFile(
@@ -103,7 +113,7 @@ app.use((error, req, res, next) => {
 });
 
 mongoose
-  .connect(mongoAtlas)
+  .connect(mongoLocal)
   .then((result) => {
     console.log("connected!");
     app.listen(8080);
