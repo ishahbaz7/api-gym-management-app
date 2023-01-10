@@ -7,7 +7,6 @@ const traineesRoute = require("./routes/traineesRoutes");
 const userRoute = require("./routes/userRoutes");
 const membershipsRoute = require("./routes/membershipsRoutes");
 const multer = require("multer");
-// const sharp = require('sharp')
 const updateTraineeStatus = require("./middleware/updateTraineeStatus");
 const sharp = require("sharp");
 
@@ -54,14 +53,14 @@ const upload = multer({ storage });
 
 app.use(bodyParser.json());
 app.use("/public", express.static(path.join(__dirname, "public")));
-app.use(express.static(path.join(__dirname, "client/build")));
+app.use(express.static(path.join(__dirname, "client", "build")));
 
 // uploading image route
 app.post("/api/upload-image", upload.single("image"), async (req, res) => {
   if (req.file) {
     const { buffer, originalname } = req.file;
     const timeStamp = new Date().toISOString();
-    const ref = `${timeStamp}-${originalname}.webp`;
+    const ref = `${timeStamp}-${originalname}`;
     await sharp(buffer)
       .webp({ quality: 20 })
       .toFile(path.join(__dirname, "public", "images", ref));
@@ -104,7 +103,7 @@ app.use((error, req, res, next) => {
 });
 
 mongoose
-  .connect(mongoLocal)
+  .connect(mongoAtlas)
   .then((result) => {
     console.log("connected!");
     app.listen(8080);
