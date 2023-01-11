@@ -17,22 +17,6 @@ const mongoAtlas =
   "mongodb+srv://shahbaz:Ids%401234@cluster0.hij2bny.mongodb.net/gymManagementApp?retryWrites=true&w=majority";
 const mongoLocal = "mongodb://localhost:27017/gymManagementApp";
 
-// const twilio = require("twilio");
-
-// const client = new twilio(
-//   "ACeace829360760e83531cfb908a1b8efd",
-//   "69c60355ddd9595d7e893c0fa91440e5"
-// );
-
-// client.messages
-//   .create({
-//     from: "whatsapp:+918983837783",
-//     message: "this is whatsapp message",
-//     to: `whatsapp:+918983837783`,
-//   })
-//   .then((message) => console.log("message", message))
-//   .catch((err) => console.log("err", err));
-
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
@@ -43,7 +27,7 @@ app.use((req, res, next) => {
   next();
 });
 
-var pubImg = path.join(__dirname, "./public/images");
+var pubImg = path.join(__dirname, "public", "images");
 if (!fs.existsSync(pubImg)) {
   fs.mkdirSync(pubImg, { recursive: true });
 }
