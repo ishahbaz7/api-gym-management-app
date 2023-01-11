@@ -97,7 +97,7 @@ app.use((error, req, res, next) => {
 });
 
 mongoose
-  .connect(mongoLocal)
+  .connect(mongoAtlas)
   .then((result) => {
     console.log("connected!");
     app.listen(8080);
