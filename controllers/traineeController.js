@@ -161,6 +161,22 @@ exports.deleteTrainee = ({ userId }, req, res, next) => {
     });
 };
 
+exports.deleteTrainees = ({ userId }, req, res, next) => {
+  const { ids } = req.body;
+  console.log("ids", ids);
+  TraineeInvoice.deleteMany({ userId, traineeId: ids })
+    .then((result) => {
+      Trainee.deleteMany({ _id: ids }).then((result) => {
+        console.log("result", result);
+        res.status(202).json("ok");
+      });
+    })
+
+    .catch((err) => {
+      next(err);
+    });
+};
+
 exports.getMembershipTypes = ({ userId }, req, res, next) => {
   Membership.find({ userId })
     .select("membershipTitle")

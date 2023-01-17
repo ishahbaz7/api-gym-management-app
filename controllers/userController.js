@@ -32,14 +32,17 @@ exports.postSignIn = (req, res, next) => {
           email: userData.email,
           userId: userData._id.toString(),
         },
-        "e0ba87d5-467e-4695-ac74-4605de04aaa4"
+        "e0ba87d5-467e-4695-ac74-4605de04aaa4",
+        { expiresIn: "1h" }
       );
       res.status(200).json({
         token: token,
+        expiresIn: 1,
         name: userData.name,
         email: userData.email,
         mobileNo: userData.mobileNo,
-        profile: userData.profileImageUrl,
+        profileImg: userData.profileImageUrl,
+        userId: userData._id,
       });
     })
     .catch((err) => {
@@ -71,6 +74,53 @@ exports.postSignUp = (req, res, next) => {
     })
     .catch((err) => {
       console.log(err);
+      next(err);
+    });
+};
+
+exports.getUser = ({ userId }, req, res, next) => {
+  User.findById(userId)
+    .select("-password")
+    .then((user) => {
+      res.status(200).json(user);
+    })
+    .catch((err) => {
+      console.log(err);
+      next(err);
+    });
+};
+
+exports.putUser = ({ userId }, req, res, next) => {
+  var upUser = req.body;
+  delete upUser._id;
+  User.updateOne({ _id: userId }, upUser)
+    .then((user) => {
+      res.status(201).json(user);
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.postPasswordChange = ({ userId }, req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const error = errorHandler(errors);
+    throw error;
+  }
+  console.log(req);
+  const { newPassword } = req.body;
+  User.findById(req.body.userId)
+    .then((user) => {
+      return bcrypt.hash(newPassword, 12).then((hashPass) => {
+        user.password = hashPass;
+        user.save();
+      });
+    })
+    .then((upUser) => {
+      res.status(202).json("Ok");
+    })
+    .catch((err) => {
       next(err);
     });
 };

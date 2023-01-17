@@ -41,16 +41,21 @@ app.use(express.static(path.join(__dirname, "client", "build")));
 
 // uploading image route
 app.post("/api/upload-image", upload.single("image"), async (req, res) => {
-  if (req.file) {
-    const { buffer, originalname } = req.file;
-    const timeStamp = new Date().toISOString();
-    const ref = `${timeStamp}-${originalname}`;
-    await sharp(buffer)
-      .webp({ quality: 20 })
-      .toFile(path.join(__dirname, "public", "images", ref));
-    return res.json({ ref: "public/images/" + ref });
+  console.log("reached to upload");
+  try {
+    if (req.file) {
+      const { buffer, originalname } = req.file;
+      const timeStamp = new Date().toISOString().replaceAll(":", "_");
+      const ref = `${timeStamp}-${originalname}`;
+      await sharp(buffer)
+        .webp({ quality: 20 })
+        .toFile(path.join(__dirname, "public", "images", ref));
+      return res.json({ ref: "public/images/" + ref });
+    }
+    return res.status(402).json({ response: "please select file" });
+  } catch (error) {
+    console.log(error);
   }
-  return res.status(402).json({ response: "please select file" });
 });
 app.post("/api/delete-image", (req, res, next) => {
   const { location } = req?.body;
@@ -84,9 +89,9 @@ app.get("/auth/sign-in", serveClient);
 
 app.use(updateTraineeStatus);
 
+app.use("/api", userRoute);
 app.use("/api", traineesRoute);
 app.use("/api", membershipsRoute);
-app.use("/api", userRoute);
 
 app.use((error, req, res, next) => {
   console.log("error from app", error);
@@ -97,7 +102,7 @@ app.use((error, req, res, next) => {
 });
 
 mongoose
-  .connect(mongoAtlas)
+  .connect(mongoLocal)
   .then((result) => {
     console.log("connected!");
     app.listen(3000);

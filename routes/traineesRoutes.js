@@ -62,6 +62,7 @@ router.post(
   traineeController.postTrainee
 );
 router.delete("/trainee/:id", isAuth, traineeController.deleteTrainee);
+router.post("/delete-trainees", isAuth, traineeController.deleteTrainees);
 
 router.get("/membershipTypes", isAuth, traineeController.getMembershipTypes);
 
