@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const path = require("path");
 const traineesRoute = require("./routes/traineesRoutes");
 const userRoute = require("./routes/userRoutes");
+const invoiceRoute = require("./routes/invoiceRoutes");
 const membershipsRoute = require("./routes/membershipsRoutes");
 const multer = require("multer");
 const updateTraineeStatus = require("./middleware/updateTraineeStatus");
@@ -92,6 +93,7 @@ app.use(updateTraineeStatus);
 app.use("/api", userRoute);
 app.use("/api", traineesRoute);
 app.use("/api", membershipsRoute);
+app.use("/api", invoiceRoute);
 
 app.use((error, req, res, next) => {
   console.log("error from app", error);

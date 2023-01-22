@@ -8,7 +8,7 @@ const TraineeSchema = new Schema(
       required: true,
       type: String,
     },
-    emailId: String,
+    email: String,
     mobileNo: {
       required: true,
       type: String,

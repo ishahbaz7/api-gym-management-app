@@ -43,7 +43,15 @@ router.post(
 
 router.get("/user", isAuth, userController.getUser);
 
-router.put("/user", isAuth, userController.putUser);
+router.put(
+  "/user",
+  [
+    body("name").not().isEmpty().withMessage("Please enter your name"),
+    body("mobileNo").not().isEmpty().withMessage("Please enter your mobile no"),
+  ],
+  isAuth,
+  userController.putUser
+);
 router.post(
   "/user/changePassword",
   [

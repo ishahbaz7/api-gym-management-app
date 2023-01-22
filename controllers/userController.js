@@ -91,6 +91,11 @@ exports.getUser = ({ userId }, req, res, next) => {
 };
 
 exports.putUser = ({ userId }, req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const error = errorHandler(errors);
+    throw error;
+  }
   var upUser = req.body;
   delete upUser._id;
   User.updateOne({ _id: userId }, upUser)
