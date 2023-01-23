@@ -60,13 +60,15 @@ app.post("/api/upload-image", upload.single("image"), async (req, res) => {
 });
 app.post("/api/delete-image", (req, res, next) => {
   const { location } = req?.body;
-  console.log("req.body", req.body);
-  fs.unlink(path.join(__dirname, location), (err) => {
-    if (!err) {
-      return res.status(202).json("ok");
-    }
-    return res.status(402).json(err);
-  });
+  const filePath = path.join(__dirname, location);
+  if (fs.existsSync(filePath)) {
+    fs.unlink(filePath, (err) => {
+      if (err) {
+        return res.status(402).json(err);
+      }
+    });
+  }
+  return res.status(202).json("ok");
 });
 
 const serveClient = (req, res) => {
@@ -104,9 +106,9 @@ app.use((error, req, res, next) => {
 });
 
 mongoose
-  .connect(mongoLocal)
+  .connect("mongodb://mongodb/gymManagementApp")
   .then((result) => {
     console.log("connected!");
-    app.listen(3000);
+    app.listen(80);
   })
   .catch((err) => console.log(err));
