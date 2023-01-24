@@ -16,3 +16,7 @@ services:
 volumes:
   mongo-data:
   images-data:
+
+
+  # sudo docker run -d --restart always --name mongodb -v mongo-data:/data/db --network gym-net  mongo
+  # sudo docker run -d --restart always --network gym-net -v images-data:/app/public --name gym-app -p 80:80   gym-api

@@ -8,7 +8,7 @@ const path = require("path");
 
 exports.getTrainees = ({ userId }, req, res, next) => {
   Trainee.find({ userId })
-    .sort({ membershipEndDate: -1 })
+    .sort({ createdAt: -1 })
     .populate("traineeInvoiceId")
     .then((trainees) => {
       return res.status(200).json({ trainees });

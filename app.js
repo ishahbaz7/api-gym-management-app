@@ -59,16 +59,21 @@ app.post("/api/upload-image", upload.single("image"), async (req, res) => {
   }
 });
 app.post("/api/delete-image", (req, res, next) => {
-  const { location } = req?.body;
-  const filePath = path.join(__dirname, location);
-  if (fs.existsSync(filePath)) {
-    fs.unlink(filePath, (err) => {
-      if (err) {
-        return res.status(402).json(err);
-      }
-    });
+  const { location = "" } = req?.body;
+  try {
+    const filePath = path.join(__dirname, location);
+    if (fs.existsSync(filePath)) {
+      fs.unlink(filePath, (err) => {
+        if (err) {
+          return res.status(402).json(err);
+        }
+      });
+    }
+    return res.status(202).json("ok");
+  } catch (error) {
+    console.log("error", error);
+    return res.status(202).json(error);
   }
-  return res.status(202).json("ok");
 });
 
 const serveClient = (req, res) => {
@@ -87,8 +92,8 @@ app.get("/active-members", serveClient);
 app.get("/expire-members", serveClient);
 app.get("/in-active-members", serveClient);
 app.get("/membership", serveClient);
-app.get("/settings", serveClient);
 app.get("/auth/sign-in", serveClient);
+app.get("/profile", serveClient);
 
 app.use(updateTraineeStatus);
 
@@ -106,9 +111,9 @@ app.use((error, req, res, next) => {
 });
 
 mongoose
-  .connect("mongodb://mongodb/gymManagementApp")
+  .connect(mongoLocal)
   .then((result) => {
     console.log("connected!");
-    app.listen(80);
+    app.listen(3000);
   })
   .catch((err) => console.log(err));
