@@ -25,6 +25,7 @@ exports.getCollections = ({ userId }, req, res, next) => {
   })
     .select("amount")
     .select("startDate")
+    // .select("createdAt")
     .then((invoices) => {
       res.status(200).json(invoices);
     });

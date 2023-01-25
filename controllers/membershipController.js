@@ -23,7 +23,6 @@ exports.postMembership = ({ userId }, req, res, next) => {
   }
   Membership.create({ ...req.body, userId })
     .then((result) => {
-      console.log(result);
       res.status(201).json(result);
     })
     .catch((err) => {
@@ -34,7 +33,6 @@ exports.postMembership = ({ userId }, req, res, next) => {
 exports.deleteMembership = ({ userId }, req, res, next) => {
   Membership.findOneAndDelete({ _id: req.params.id, userId })
     .then((result) => {
-      console.log(result);
       if (result) {
         return res.status(202).json(result);
       }
