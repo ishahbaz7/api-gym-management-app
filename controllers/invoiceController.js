@@ -17,15 +17,16 @@ exports.getCollections = ({ userId }, req, res, next) => {
   const { sd, ed } = req.body;
   const d1 = new Date(sd);
   const d2 = new Date(ed);
-  const start = Date.UTC(d1.getFullYear(), d1.getMonth(), d1.getDate());
-  const end = Date.UTC(d2.getFullYear(), d2.getMonth(), d2.getDate());
+  const start = new Date(d1.setHours(00, 00, 00));
+  const end = new Date(d2.setHours(23, 59, 59));
+  console.log(start, end);
   TraineeInvoice.find({
     userId,
-    startDate: { $gte: start, $lte: end },
+    createdAt: { $gte: start, $lte: end },
   })
     .select("amount")
     .select("startDate")
-    // .select("createdAt")
+    .select("createdAt")
     .then((invoices) => {
       res.status(200).json(invoices);
     });
