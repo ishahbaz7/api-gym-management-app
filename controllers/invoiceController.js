@@ -43,3 +43,57 @@ exports.deleteInvoice = ({ userId }, req, res, next) => {
       next(err);
     });
 };
+
+exports.getRemainingBalance = ({ userId }, req, res, next) => {
+  TraineeInvoice.find({ userId, remainingBalance: { $gt: 0 } })
+    .populate("traineeId", "name")
+    .select("name")
+    .select("amount")
+    .select("remainingBalance")
+    .select("traineeId")
+    .select("startDate")
+    .select("endDate")
+    .select("membershipTitle")
+    .then((invoices) => {
+      console.log(invoices);
+      res.status(200).json(invoices);
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.postRemainingBalance = ({ userId }, req, res, next) => {
+  const {
+    remainingBalance,
+    invoiceId,
+    traineeId,
+    startDate,
+    endDate,
+    membershipTitle,
+  } = req.body;
+  console.log(remainingBalance, invoiceId);
+  TraineeInvoice.create({
+    amount: remainingBalance,
+    userId,
+    traineeId,
+    startDate,
+    endDate,
+    membershipTitle,
+  }).then((inv) => {
+    TraineeInvoice.findOne({ userId, _id: invoiceId })
+      .then((traineeInv) => {
+        traineeInv.invoiceReferenceId.push(inv._id);
+        traineeInv.remainingBalance =
+          traineeInv.remainingBalance - remainingBalance || 0;
+        traineeInv.save();
+        return inv;
+      })
+      .then((result) => {
+        res.status(201).json(result);
+      })
+      .catch((err) => {
+        next(err);
+      });
+  });
+};

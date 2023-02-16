@@ -33,8 +33,15 @@ exports.getTrainee = ({ userId }, req, res, next) => {
 };
 
 exports.renewMembership = ({ userId }, req, res, next) => {
-  const { _id, membershipType, startDate, endDate, amount, membershipTitle } =
-    req.body;
+  const {
+    _id,
+    membershipType,
+    startDate,
+    endDate,
+    amount,
+    membershipTitle,
+    remainingBalance,
+  } = req.body;
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const error = errorHandler(errors);
@@ -48,6 +55,7 @@ exports.renewMembership = ({ userId }, req, res, next) => {
     membershipId: membershipType,
     traineeId: _id,
     userId,
+    remainingBalance,
   })
     .then((invoice) => {
       Trainee.findOneAndUpdate(
@@ -81,6 +89,7 @@ exports.postTrainee = ({ userId }, req, res, next) => {
     membershipType,
     membershipTitle,
     amount,
+    remainingBalance,
     startDate,
     endDate,
     profileImg,
@@ -112,6 +121,7 @@ exports.postTrainee = ({ userId }, req, res, next) => {
             startDate,
             endDate,
             amount,
+            remainingBalance,
             traineeId: traineeResult._id,
             membershipId: membershipObj._id,
             membershipTitle: membership.membershipTitle,

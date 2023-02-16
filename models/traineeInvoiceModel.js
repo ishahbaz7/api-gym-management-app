@@ -5,26 +5,30 @@ const Schema = mongoose.Schema;
 const TraineeInvoiceSchema = new Schema(
   {
     traineeId: {
-      require: true,
       type: Schema.Types.ObjectId,
       ref: "Trainee",
     },
     membershipId: {
-      require: true,
       type: Schema.Types.ObjectId,
       ref: "Membership",
     },
     membershipTitle: {
-      require: true,
       type: String,
     },
-    amount: Number,
-    startDate: {
+    amount: {
       required: true,
+      type: Number,
+      default: 0,
+    },
+    startDate: {
       type: Date,
     },
+    remainingBalance: Number,
+    invoiceReferenceId: {
+      type: [Schema.Types.ObjectId],
+      ref: "TraineeInvoice",
+    },
     endDate: {
-      require: true,
       type: Date,
     },
     membershipId: {
